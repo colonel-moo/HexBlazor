@@ -17,12 +17,16 @@ namespace HexBlazorAF
 
             HexBlazorLib.WeatherForecast[] forecast = new HexBlazorLib.WeatherForecast[]
             {
-                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,06), TemperatureC = -1, Summary = "Bitter"},
-                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,07), TemperatureC = 9, Summary = "Bitter"},
-                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,08), TemperatureC = 18, Summary = "Freezing"},
-                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,09), TemperatureC = 27, Summary = "Freezing"},
-                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,10), TemperatureC = 36, Summary = "Bracing"},
-                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,10), TemperatureC = 45, Summary = "Balmy"}
+                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,09), TemperatureC = 18, Summary = "Freezing"},
+                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,10), TemperatureC = 27, Summary = "Freezing"},
+                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,11), TemperatureC = 36, Summary = "Bracing"},
+                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,12), TemperatureC = 45, Summary = "Cool"},
+                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,13), TemperatureC = 56, Summary = "Cool"},
+                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,14), TemperatureC = 64, Summary = "Perfect"},
+                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,15), TemperatureC = 73, Summary = "Perfect"},
+                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,16), TemperatureC = 82, Summary = "Warm"},
+                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,17), TemperatureC = 91, Summary = "Hot"},
+                new HexBlazorLib.WeatherForecast() { Date = new System.DateTime(2018,05,18), TemperatureC = 99, Summary = "Hot"},
             };
 
             return new OkObjectResult(forecast);
