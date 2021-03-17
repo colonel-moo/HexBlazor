@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexBlazorAF", "HexBlazorAF\HexBlazorAF.csproj", "{F2AA5F72-5FEA-46DD-812E-F202FC481E33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HexBlazorAF", "HexBlazorAF\HexBlazorAF.csproj", "{F2AA5F72-5FEA-46DD-812E-F202FC481E33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexBlazorSWA", "HexBlazorSWA\HexBlazorSWA.csproj", "{854382F5-09DA-4EE9-96F9-FCBEC52F08F3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HexBlazorSWA", "HexBlazorSWA\HexBlazorSWA.csproj", "{854382F5-09DA-4EE9-96F9-FCBEC52F08F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HexBlazorLib", "HexBlazorLib\HexBlazorLib.csproj", "{ED982800-0720-474E-B6E6-DE187583E382}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HexBlazorLib", "HexBlazorLib\HexBlazorLib.csproj", "{ED982800-0720-474E-B6E6-DE187583E382}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

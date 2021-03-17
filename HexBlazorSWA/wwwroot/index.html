@@ -8,6 +8,18 @@
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
+
+    <script>
+        window.saveSvg = (svg, filename) => {
+            const base64doc = btoa(unescape(encodeURIComponent(svg.outerHTML)));
+            const a = document.createElement('a');
+            const e = new MouseEvent('click');
+            a.download = filename;
+            a.href = 'data:image/svg+xml;base64,' + base64doc;
+            a.dispatchEvent(e);
+        };
+    </script>
+
 </head>
 
 <body>
@@ -16,8 +28,21 @@
     <div id="blazor-error-ui">
         An unhandled error has occurred.
         <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
+        <a class="dismiss">&times;</a>
     </div>
+
+    <script>
+        function getDivDimensions(element) {
+            var obj = {};
+            var domRect = element.getBoundingClientRect()
+            obj.offsetLeft = domRect.left;
+            obj.offsetTop = domRect.top;
+            obj.width = domRect.width;
+            obj.height = domRect.height;
+            return JSON.stringify(obj);
+        };
+    </script>
+
     <script src="_framework/blazor.webassembly.js"></script>
 </body>
 
