@@ -113,6 +113,7 @@ namespace HexBlazorSWA.Pages
                 var pxRadius = (_size / Math.Sqrt(3)) * DPI;
                 var size = new GridPoint(pxRadius);
 
+                // instead of these calls, make an HTTP request to the API
                 _grid = new Grid(_rowCount, _colCount, size, origin, schema);
                 _map = _grid.InitMap();
 
