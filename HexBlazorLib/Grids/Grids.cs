@@ -46,6 +46,76 @@ namespace HexBlazorLib.Grids
             Skew = isRight ? MegagonSkew.Right : MegagonSkew.Left;
         }
 
+        #region Coordinate conversions
+
+        #region Offset to Cube
+
+        private static readonly int EVEN = 1;
+        private static readonly int ODD = -1;
+
+        internal Cube GetCubeFromOffset(Offset hex)
+        {
+            return Style switch
+            {
+                HexagonStyle.Flat => OffsetToCubeQ(Offset == OffsetPush.Even ? EVEN : ODD, hex),
+                HexagonStyle.Pointy => OffsetToCubeR(Offset == OffsetPush.Even ? EVEN : ODD, hex),
+                _ => throw new ArgumentException(string.Format("Invalid Style {0} specified for OffsetSchema", Style))
+            };
+        }
+
+        private static Cube OffsetToCubeQ(int push, Offset h)
+        {
+            int x = h.Col;
+            int y = h.Row - (int)((h.Col + push * (h.Col & 1)) / 2);
+            int z = -x - y;
+            return new Cube(x, y, z);
+        }
+
+        private static Cube OffsetToCubeR(int push, Offset h)
+        {
+            int x = h.Col - (int)((h.Row + push * (h.Row & 1)) / 2);
+            int y = h.Row;
+            int z = -x - y;
+            return new Cube(x, y, z);
+        }
+
+        #endregion
+
+        #region Cube to Offset
+
+        /// <summary>
+        /// convert a cube to offset (row, column) coordinates
+        /// </summary>
+        /// <param name="hex">the hex for which you want the offset coordinates</param>
+        /// <returns>Offset</returns>
+        internal Offset GetOffset(Cube hex)
+        {
+            return Style switch
+            {
+                HexagonStyle.Flat => GetOffsetQ(Offset == OffsetPush.Even ? EVEN : ODD, hex),
+                HexagonStyle.Pointy => GetOffsetR(Offset == OffsetPush.Even ? EVEN : ODD, hex),
+                _ => throw new ArgumentException(string.Format("Invalid Style {0} specified for OffsetSchema", Style))
+            };
+        }
+
+        private static Offset GetOffsetQ(int push, Cube hex)
+        {
+            int col = hex.X;
+            int row = hex.Y + ((hex.X + push * (hex.X & 1)) / 2);
+            return new Offset(row, col);
+        }
+
+        private static Offset GetOffsetR(int push, Cube hex)
+        {
+            int col = hex.X + (hex.Y + push * (hex.Y & 1)) / 2;
+            int row = hex.Y;
+            return new Offset(col, row);
+        }
+
+        #endregion
+
+        #endregion
+
     }
 
     public class Grid

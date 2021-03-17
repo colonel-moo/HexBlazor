@@ -7,6 +7,20 @@ using HexBlazorLib.SvgHelpers;
 
 namespace HexBlazorLib.Grids
 {
+    /// <summary>
+    /// identifies the location of a hex within a megahex
+    /// </summary>
+    internal enum MegaLocation
+    {
+        N = -1, // not set
+        X = 0,  // center
+        A = 1,  // flat = lower-right   pointy = right
+        B = 2,  // flat = upper-right   pointy = upper-right
+        C = 3,  // flat = top           pointy = upper-left
+        D = 4,  // flat = upper-left    pointy = left
+        E = 5,  // flat = lower-left    pointy = lower-left
+        F = 6   // flat = bottom        pointy = lower-right
+    }
 
     internal class Hexagon
     {
@@ -18,14 +32,14 @@ namespace HexBlazorLib.Grids
         /// </summary>
         /// <param name="grid">the parent grid that contains this hexagon</param>
         /// <param name="coords">the offset coordinates of the hexagon</param>
-        public Hexagon(Grid grid, Offset coords) : this(grid, Cube.GetCubeFromOffset(grid.OffsetSchema, coords), coords) { }
+        public Hexagon(Grid grid, Offset coords) : this(grid, grid.OffsetSchema.GetCubeFromOffset(coords), coords) { }
 
         /// <summary>
         /// construct a hexagon by passing the grid and cubic coordinates
         /// </summary>
         /// <param name="grid">the parent grid that contains this hex</param>
         /// <param name="coords">the cubic coordinates of the hexagon</param>
-        public Hexagon(Grid grid, Cube coords) : this(grid, coords, Offset.GetOffset(grid.OffsetSchema, coords)) { }
+        public Hexagon(Grid grid, Cube coords) : this(grid, coords, grid.OffsetSchema.GetOffset(coords)) { }
 
         private Hexagon(Grid grid, Cube cubeCoords, Offset offsetCoords)
         {

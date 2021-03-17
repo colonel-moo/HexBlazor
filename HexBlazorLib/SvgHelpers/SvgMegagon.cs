@@ -4,20 +4,6 @@ using HexBlazorLib.Grids;
 
 namespace HexBlazorLib.SvgHelpers
 {
-    /// <summary>
-    /// identifies the location of a hex within a megahex
-    /// </summary>
-    public enum MegaLocation
-    {
-        N = -1, // not set
-        X = 0,  // center
-        A = 1,  // flat = lower-right   pointy = right
-        B = 2,  // flat = upper-right   pointy = upper-right
-        C = 3,  // flat = top           pointy = upper-left
-        D = 4,  // flat = upper-left    pointy = left
-        E = 5,  // flat = lower-left    pointy = lower-left
-        F = 6   // flat = bottom        pointy = lower-right
-    }
 
     public struct SvgMegagon
     {
@@ -583,7 +569,6 @@ namespace HexBlazorLib.SvgHelpers
         {
             return string.Format("M{0},{1} L{2},{3} ", edge.PointA.X, edge.PointA.Y, edge.PointB.X, edge.PointB.Y);
         }
-
 
         #endregion
 
