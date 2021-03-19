@@ -13,40 +13,11 @@ namespace HexBlazorLib.Coordinates
         public readonly double X;
         public readonly double Y;
 
-        public GridPoint(double size)
-        {
-            X = size;
-            Y = size;
-        }
-
         public GridPoint(double x, double y)
         {
             X = x;
             Y = y;
         }
-
-        public static GridPoint GetRound(GridPoint point, int places)
-        {
-            var x = (double)(decimal.Round((decimal)point.X, places));
-            var y = (double)(decimal.Round((decimal)point.Y, places));
-            return new GridPoint(x, y);
-        }
-
-        public static double GetDistance(double x1, double y1, double x2, double y2)
-        {
-            return Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2));
-        }
-
-        public static double GetDistance(GridPoint gridpointA, GridPoint gridpointB)
-        {
-            return Math.Sqrt(Math.Pow((gridpointB.X - gridpointA.X), 2) + Math.Pow((gridpointB.Y - gridpointA.Y), 2));
-        }
-
-        public double GetDistanceTo(GridPoint target)
-        {
-            return Math.Sqrt(Math.Pow((target.X - X), 2) + Math.Pow((target.Y - Y), 2));
-        }
-
     }
 
     /// <summary>
@@ -260,44 +231,11 @@ namespace HexBlazorLib.Coordinates
         public readonly int Row;
         public readonly int Col;
 
-        private static readonly int EVEN = 1;
-        private static readonly int ODD = -1;
-
         public Offset(int row, int col)
         {
             Row = row;
             Col = col;
         }
-
-        ///// <summary>
-        ///// convert a cube to offset (row, column) coordinates
-        ///// </summary>
-        ///// <param name="schema">the schema of the parent grid</param>
-        ///// <param name="hex">the hex for which you want the offset coordinates</param>
-        ///// <returns>Offset</returns>
-        //public static Offset GetOffset(OffsetSchema schema, Cube hex)
-        //{
-        //    return schema.Style switch
-        //    {
-        //        HexagonStyle.Flat => GetOffsetQ(schema.Offset == OffsetPush.Even ? EVEN : ODD, hex),
-        //        HexagonStyle.Pointy => GetOffsetR(schema.Offset == OffsetPush.Even ? EVEN : ODD, hex),
-        //        _ => throw new ArgumentException(string.Format("Invalid Style {0} specified for OffsetSchema", schema.Style))
-        //    };
-        //}
-
-        //private static Offset GetOffsetQ(int push, Cube hex)
-        //{
-        //    int col = hex.X;
-        //    int row = hex.Y + ((hex.X + push * (hex.X & 1)) / 2);
-        //    return new Offset(row, col);
-        //}
-
-        //private static Offset GetOffsetR(int push, Cube hex)
-        //{
-        //    int col = hex.X + (hex.Y + push * (hex.Y & 1)) / 2;
-        //    int row = hex.Y;
-        //    return new Offset(col, row);
-        //}
 
         #region Equality/Hashcode overrides
 
@@ -331,6 +269,24 @@ namespace HexBlazorLib.Coordinates
 
     }
 
+    internal static class GridPointCalc
+    {
+        public static GridPoint GetRound(GridPoint point, int places)
+        {
+            var x = (double)(decimal.Round((decimal)point.X, places));
+            var y = (double)(decimal.Round((decimal)point.Y, places));
+            return new GridPoint(x, y);
+        }
 
+        public static double GetDistance(double x1, double y1, double x2, double y2)
+        {
+            return Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2));
+        }
+
+        public static double GetDistance(GridPoint gridpointA, GridPoint gridpointB)
+        {
+            return Math.Sqrt(Math.Pow((gridpointB.X - gridpointA.X), 2) + Math.Pow((gridpointB.Y - gridpointA.Y), 2));
+        }
+    }
 
 }

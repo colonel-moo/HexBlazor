@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using HexBlazorLib.Coordinates;
 using HexBlazorLib.SvgHelpers;
 
@@ -31,8 +32,8 @@ namespace HexBlazorLib.Grids
         /// construct a Hexagon by passing the grid and offset coordinates
         /// </summary>
         /// <param name="grid">the parent grid that contains this hexagon</param>
-        /// <param name="coords">the offset coordinates of the hexagon</param>
-        public Hexagon(Grid grid, Offset coords) : this(grid, grid.OffsetSchema.GetCubeFromOffset(coords), coords) { }
+        /// <param name="offset">the offset coordinates of the hexagon</param>
+        public Hexagon(Grid grid, Offset offset) : this(grid, OffsetSchema.GetCube(grid.OffsetSchema, offset), offset) { }
 
         /// <summary>
         /// construct a hexagon by passing the grid and cubic coordinates
@@ -54,6 +55,10 @@ namespace HexBlazorLib.Grids
                 if (grid.Edges.ContainsKey(e.ID))
                 {
                     var edge = grid.Edges[e.ID];
+
+                    if (edge.Hexagons.ContainsKey(ID))
+                        Console.WriteLine("BOOM!");
+
                     edge.Hexagons.Add(ID, this);
                 }
                 else
@@ -84,6 +89,20 @@ namespace HexBlazorLib.Grids
         /// the points that define the six corners of the hexagon
         /// </summary>
         public GridPoint[] Points { get; private set; }
+
+        public string GetSvgPoints()
+        {
+            return string.Join(" ", Points.Select(p => string.Format("{0},{1}", p.X, p.Y)));
+        }
+
+        public string GetStarD()
+        {
+            // figure out where and how big to draw the star:
+            GridPoint midPoint = new GridPoint((Points[3].X + Points[0].X) / 2, (Points[3].Y + Points[0].Y) / 2);
+            double outerRadius = GridPointCalc.GetDistance(Points[0], Points[1]) / 64;
+
+            return SvgPathDFactory.Instance.GetPathD(SvgPathDFactory.Type.Star, midPoint, outerRadius);
+        }
 
         public GridEdge[] Edges { get; private set; }
 

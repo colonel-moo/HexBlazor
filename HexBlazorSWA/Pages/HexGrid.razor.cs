@@ -1,15 +1,18 @@
-﻿using HexBlazorSWA.Components;
+﻿using HexBlazorLib.Coordinates;
+using HexBlazorLib.Grids;
+using HexBlazorLib.Maps;
+using HexBlazorLib.SvgHelpers;
+using HexBlazorSWA.Components;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.IO;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-using HexBlazorLib.Coordinates;
-using HexBlazorLib.Grids;
-using HexBlazorLib.Maps;
-using HexBlazorLib.SvgHelpers;
 
 namespace HexBlazorSWA.Pages
 {
@@ -110,15 +113,37 @@ namespace HexBlazorSWA.Pages
 
                 var origin = new GridPoint(0.5d, .5d);
                 var schema = new OffsetSchema(_isStylePointy, _isOffsetOdd, _isSkewRight);
-                var pxRadius = (_size / Math.Sqrt(3)) * DPI;
-                var size = new GridPoint(pxRadius);
+                var radius = (_size / Math.Sqrt(3)) * DPI;
+                var radPoint = new GridPoint(radius, radius);
+                var @params = JsonConvert.SerializeObject(new HexGridParams(_rowCount, _colCount, radPoint, origin, schema));
+                var requestBody = new StringContent(@params, Encoding.UTF8, "application/json");
 
-                // instead of these calls, make an HTTP request to the API
-                _grid = new Grid(_rowCount, _colCount, size, origin, schema);
-                _map = _grid.InitMap();
+                var url = _client.BaseAddress + "/api/GetHexGrid";
 
-                _svgRef.SetGeometry(_grid.SvgHexagons, _grid.SvgMegagons);
-                _saveDisabled = false;
+                SvgGrid svgGrid;
+
+                var request = new HttpRequestMessage(HttpMethod.Post, url) { Content = requestBody };
+                var response = await _client.SendAsync(request); //, cancellationToken))
+                var stream = await response.Content.ReadAsStreamAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    svgGrid = DeserializeJsonFromStream<SvgGrid>(stream);
+                    _svgRef.SetGeometry(svgGrid.SvgHexagons, svgGrid.SvgMegagons);
+                    _saveDisabled = false;
+                }
+
+                var content = await StreamToStringAsync(stream);
+                throw new ApiException
+                {
+                    StatusCode = (int)response.StatusCode,
+                    Content = content
+                };
+
+                //var response = await _client.PostAsync("http://localhost:7071/api/GetHexGrid", requestBody);
+
+                //string responseBody = await response.Content.ReadAsStringAsync();
+                //var svgGrid = JsonConvert.DeserializeObject<SvgGrid>(responseBody);
 
                 // hide the spinner here
             }
@@ -230,5 +255,37 @@ namespace HexBlazorSWA.Pages
                 }
             }
         }
+
+        private static T DeserializeJsonFromStream<T>(Stream stream)
+        {
+            if (stream == null || stream.CanRead == false) return default;
+
+            var sr = new StreamReader(stream);
+            var jtr = new JsonTextReader(sr);
+            var js = new JsonSerializer();
+            return js.Deserialize<T>(jtr);
+        }
+
+        private static async Task<string> StreamToStringAsync(Stream stream)
+        {
+            string content = null;
+
+            if (stream != null)
+            {
+                var sr = new StreamReader(stream);
+                content = await sr.ReadToEndAsync();
+            }
+
+            return content;
+        }
+
     }
+
+    internal class ApiException : Exception
+    {
+        public int StatusCode { get; set; }
+
+        public string Content { get; set; }
+    }
+
 }

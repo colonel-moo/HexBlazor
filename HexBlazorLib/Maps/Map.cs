@@ -70,7 +70,7 @@ namespace HexBlazorLib.Maps
         private void AddingHexagon(object sender, DictionaryChangingEventArgs<int, Hexagon> e)
         {
             var hex = e.Value;
-            SvgHexagons.Add(e.Key, new SvgHexagon(e.Key, hex.OffsetLocation.Row, hex.OffsetLocation.Col, hex.Points, true));
+            SvgHexagons.Add(e.Key, new SvgHexagon(e.Key, hex.OffsetLocation.Row, hex.OffsetLocation.Col, hex.GetSvgPoints(), true, hex.GetStarD()));
 
             // update the map's edges and revise the SvgMegagons as necessary
             foreach (GridEdge edge in hex.Edges)

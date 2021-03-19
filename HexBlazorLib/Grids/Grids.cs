@@ -7,6 +7,23 @@ using HexBlazorLib.SvgHelpers;
 
 namespace HexBlazorLib.Grids
 {
+    public struct HexGridParams
+    {
+        public readonly int RowCount;
+        public readonly int ColCount;
+        public readonly GridPoint Radius;
+        public readonly GridPoint Origin;
+        public readonly OffsetSchema Schema;
+
+        public HexGridParams(int rowCount, int colCount, GridPoint radius, GridPoint origin, OffsetSchema schema)
+        {
+            RowCount = rowCount;
+            ColCount = colCount;
+            Radius = radius;
+            Origin = origin;
+            Schema = schema;
+        }
+    }
 
     public enum HexagonStyle
     {
@@ -53,13 +70,13 @@ namespace HexBlazorLib.Grids
         private static readonly int EVEN = 1;
         private static readonly int ODD = -1;
 
-        internal Cube GetCubeFromOffset(Offset hex)
+        internal static Cube GetCube(OffsetSchema schema, Offset hex)
         {
-            return Style switch
+            return schema.Style switch
             {
-                HexagonStyle.Flat => OffsetToCubeQ(Offset == OffsetPush.Even ? EVEN : ODD, hex),
-                HexagonStyle.Pointy => OffsetToCubeR(Offset == OffsetPush.Even ? EVEN : ODD, hex),
-                _ => throw new ArgumentException(string.Format("Invalid Style {0} specified for OffsetSchema", Style))
+                HexagonStyle.Flat => OffsetToCubeQ(schema.Offset == OffsetPush.Even ? EVEN : ODD, hex),
+                HexagonStyle.Pointy => OffsetToCubeR(schema.Offset == OffsetPush.Even ? EVEN : ODD, hex),
+                _ => throw new ArgumentException(string.Format("Invalid Style {0} specified for OffsetSchema", schema.Style))
             };
         }
 
@@ -147,6 +164,12 @@ namespace HexBlazorLib.Grids
         public Grid(int rows, int cols, GridPoint radius, GridPoint origin) : this(rows, cols, radius, origin, new OffsetSchema()) { }
 
         /// <summary>
+        /// constructor for grid, passing options in with a helper object
+        /// </summary>
+        /// <param name="params">HexGridParams struct holding all options for constructing the grid</param>
+        public Grid(HexGridParams @params) : this(@params.RowCount, @params.ColCount, @params.Radius, @params.Origin, @params.Schema) { }
+
+        /// <summary>
         /// constructor for Grid, passing all configuration options
         /// </summary>
         /// <param name="rows">the number of rows in the grid</param>
@@ -185,6 +208,10 @@ namespace HexBlazorLib.Grids
                 {
                     var hex = new Hexagon(this, new Offset(r, c));
                     var hash = hex.ID;
+
+                    if (Hexagons.ContainsKey(hash))
+                        Console.WriteLine("Boom");
+
                     Hexagons.Add(hash, hex);
 
                     if (GetIsOutOfBounds(Rows, Cols, hex.OffsetLocation))
@@ -198,7 +225,7 @@ namespace HexBlazorLib.Grids
             // get the SVG data for each hexagon
             foreach (Hexagon h in Hexagons.Values)
             {
-                SvgHexagons.Add(h.ID, new SvgHexagon(h.ID, h.OffsetLocation.Row, h.OffsetLocation.Col, h.Points));
+                SvgHexagons.Add(h.ID, new SvgHexagon(h.ID, h.OffsetLocation.Row, h.OffsetLocation.Col, h.GetSvgPoints(), true, h.GetStarD()));
             }
 
             // TRIM hexagons outside the requested offset limits for the grid
@@ -229,7 +256,7 @@ namespace HexBlazorLib.Grids
             }
 
         }
-
+        
         #region Layout
 
         /// <summary>
@@ -306,7 +333,7 @@ namespace HexBlazorLib.Grids
                 for (int i = 0; i < 6; i++)
                 {
                     GridPoint offset = HexCornerOffset(i);
-                    corners[i] = (GridPoint.GetRound(new GridPoint(center.X + offset.X * factor, center.Y + offset.Y * factor), 3));
+                    corners[i] = (GridPointCalc.GetRound(new GridPoint(center.X + offset.X * factor, center.Y + offset.Y * factor), 3));
                 }
 
                 return corners;
