@@ -1,32 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using HexBlazorLib.Coordinates;
+using HexBlazorInterfaces.SvgHelpers;
+using HexBlazorInterfaces.Structs;
 
 namespace HexBlazorLib.SvgHelpers
 {
     /// <summary>
     /// factory for returning SVG Path D for various graphic elements
     /// </summary>
-    public sealed class SvgPathDFactory
+    public sealed class SvgPathDFactory : ISvgPathDFactory
     {
         private static readonly SvgPathDFactory instance = new SvgPathDFactory();
-        private readonly Dictionary<Type, ISvgPathDGetter> dictionary;
-
-        /// <summary>
-        /// identify the specific SVG drawing being requested
-        /// other members could be hex labels, counters/figure art, etc.
-        /// </summary>
-        public enum Type
-        {
-            Star
-        }
+        private readonly Dictionary<ISvgPathDFactory.Style, ISvgPathDGetter> dictionary;
 
         private SvgPathDFactory()
         {
-            dictionary = new Dictionary<Type, ISvgPathDGetter>
+            dictionary = new Dictionary<ISvgPathDFactory.Style, ISvgPathDGetter>
             {
-                { Type.Star, new StarSvgPathDGetter() }
+                { ISvgPathDFactory.Style.Star, new StarSvgPathDGetter() }
             };
         }
 
@@ -48,19 +40,11 @@ namespace HexBlazorLib.SvgHelpers
         /// <param name="origin">absolute location where SVG will be drawn on parent</param>
         /// <param name="size">how big to draw it, in user units</param>
         /// <returns></returns>
-        public string GetPathD(Type type, GridPoint origin, double size)
+        public string GetPathD(ISvgPathDFactory.Style type, GridPoint origin, double size)
         {
             return (dictionary[type].GetPathD(origin, size));
         }
 
-    }
-
-    /// <summary>
-    /// interface for Path Getter helper classes
-    /// </summary>
-    public interface ISvgPathDGetter
-    {
-        string GetPathD(GridPoint origin, double size);
     }
 
     /// <summary>

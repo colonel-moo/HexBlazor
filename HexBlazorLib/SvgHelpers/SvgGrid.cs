@@ -1,41 +1,27 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using HexBlazorInterfaces.Structs;
+using HexBlazorInterfaces.SvgHelpers;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
-using System.Xml.Schema;
-using System.Xml.Serialization;
 
 namespace HexBlazorLib.SvgHelpers
 {
-    public class SvgGrid
+    public class SvgGrid : ISvgGrid
     {
         private SvgGrid() { }
 
-        public SvgGrid(Dictionary<int, SvgHexagon> hexagons, Dictionary<int, SvgMegagon> megagons)
+        public SvgGrid(IEnumerable<KeyValuePair<int, ISvgHexagon>> hexagons
+                     , IEnumerable<KeyValuePair<int, SvgMegagon>> megagons
+                     , SvgViewBox viewBox)
         {
             SvgHexagons = hexagons;
             SvgMegagons = megagons;
+            SvgViewBox = viewBox;
         }
 
-        [JsonIgnore]
-        public Dictionary<int, SvgHexagon> SvgHexagons { get; private set; }
+        public IEnumerable<KeyValuePair<int, ISvgHexagon>> SvgHexagons { get; private set; }
 
-        public List<KeyValuePair<int, SvgHexagon>> SvgHexList
-        {
-            get { return SvgHexagons.ToList(); }
-            set { SvgHexagons = value.ToDictionary(x => x.Key, x => x.Value); }
-        }
+        public IEnumerable<KeyValuePair<int, SvgMegagon>> SvgMegagons { get; private set; }
 
-        [JsonIgnore]
-        public Dictionary<int, SvgMegagon> SvgMegagons { get; private set; }
-
-        public List<KeyValuePair<int, SvgMegagon>> SvgMegaList
-        {
-            get { return SvgMegagons.ToList(); }
-            set { SvgMegagons = value.ToDictionary(x => x.Key, x => x.Value); }
-        }
+        public SvgViewBox SvgViewBox { get; private set; }
 
     }
 
